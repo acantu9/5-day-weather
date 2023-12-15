@@ -4,15 +4,18 @@ const apiKey = 'c7e81f239bf65cf328d2b68e7626567f';
 const form = document.querySelector('#search-form');
 const input = document.querySelector('#city-input');
 
-// Add an event listener to the form submission
+// Get the city name entered by the user
+const city = input.value;
+
+// Construct the URL for the API call
+const apiUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
+
+// Create an array to store city data
+const cityData = [];
+
+// Update the city variable each time the form is submitted
 form.addEventListener('submit', function(event) {
     event.preventDefault();
-
-    // Get the city name entered by the user
-    const city = input.value;
-
-    // Construct the URL for the API call
-    const apiUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
 
     // Make the API call using fetch()
     fetch(apiUrl)
@@ -20,6 +23,10 @@ form.addEventListener('submit', function(event) {
     .then(data => {
     // Process the response data
     console.log(data);
+
+    // Update the city variable and cityData array
+    city = data[0].name;
+    cityData.push(data[0]);
     })
     .catch(error => {
     console.log('Error:', error);
