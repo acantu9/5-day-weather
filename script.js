@@ -35,3 +35,26 @@ form.addEventListener('submit', function(event) {
     // Clear the input field after making the API call
     input.value = '';
 });
+
+// Retrieve weather data from the API
+fetch(apiUrl)
+.then(function(response) {
+    return response.json();
+})
+.then(function(data) {
+    // Parse the JSON response and extract relevant information
+    const cityName = data.name;
+    const temperature = data.main.temp;
+    const wind = data.main.wind;
+    const humidity = data.main.humidity;
+
+    // Update HTML elements with weather information
+    document.getElementById('cityName').innerHTML = cityName;
+    document.getElementById('temperature').innerHTML = temperature;
+    document.getElementById('wind').innerHTML = temperature;
+    document.getElementById('humidity').innerHTML = humidity;
+})
+.catch(function(error) {
+    console.log('Error:', error);
+});
+
