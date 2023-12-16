@@ -1,60 +1,86 @@
+// Move the API key to a separate configuration file or environment variable
 const apiKey = 'c7e81f239bf65cf328d2b68e7626567f';
 
 // Get the form element and input field
 const form = document.querySelector('#search-form');
 const input = document.querySelector('#city-input');
 
-// Get the city name entered by the user
-const city = input.value;
-
-// Construct the URL for the API call
-const apiUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
-
 // Create an array to store city data
 const cityData = [];
 
-// Update the city variable each time the form is submitted
-form.addEventListener('submit', function(event) {
-    event.preventDefault();
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to handle form submission
+    const searchHistoryString = localStorage.getItem('searchHistory');
 
-    // Make the API call using fetch()
-    fetch(apiUrl)
-    .then(response => response.json())
-    .then(data => {
-    // Process the response data
-    console.log(data);
+    // Function to handle form submission
+    const handleFormSubmit = (event) => {
+        event.preventDefault();
+      
+        const cityName = input.value.trim();
+      
+        if (cityName) {
+          const geoApiUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${apiKey}`;
+      
+          fetch(geoApiUrl)
+            .then(response => response.json())
+            .then(geoData => {
+              const { lat, lon } = geoData[0];
+      
+              const weatherApiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+      
+              fetch(weatherApiUrl)
+                .then(response => response.json())
+                .then(weatherData => {
+                    console.log(weatherData);
+      
+                    // Update the cityData array
+                    cityData.push(weatherData);
 
-    // Update the city variable and cityData array
-    city = data[0].name;
-    cityData.push(data[0]);
-    })
-    .catch(error => {
-    console.log('Error:', error);
-    });
+                    // Assuming the temperature in Kelvin is stored in a variable called kelvinTemp
+                    let kelvinTemp = weatherData.list[0].main.temp;
 
-    // Clear the input field after making the API call
-    input.value = '';
+                    // Convert Kelvin to Fahrenheit
+                    let fahrenheitTemp = (kelvinTemp - 273.15) * 9/5 + 32;
+      
+                    // Update HTML elements with weather information
+                    document.getElementById('cityName').innerHTML = weatherData.city.name;
+
+
+                    // Set the text of an HTML element with the id "temperature" to the converted temperature
+                    document.getElementById('temperature').innerHTML = "Temp: " + fahrenheitTemp.toFixed(2) + "°F";
+
+                    //document.getElementById('temperature').innerHTML = "Temp: " + weatherData.list[0].main.temp;
+                    document.getElementById('wind').innerHTML = "Wind Speed: " + weatherData.list[0].wind.speed + "mph";
+                    document.getElementById('humidity').innerHTML = "Humidity: " + weatherData.list[0].main.humidity + "%";
+                })
+                .catch(error => {
+                  console.log('Error:', error);
+                });
+            })
+            .catch(error => {
+              console.log('Error:', error);
+            });
+      
+          input.value = '';
+        }
+      };
+
+    // Add event listener to the form submit button
+    form.addEventListener('submit', handleFormSubmit);
+
+    // Save search history to localStorage
+    if (searchHistoryString) {
+        // Parse the search history from string to array
+        const searchHistory = JSON.parse(searchHistoryString);
+
+        // Get the search history element
+        const searchHistoryElement = document.getElementById('searchHistory');
+
+        // Loop through the search history array and create list items
+        searchHistory.forEach(cityName => {
+            const listItem = document.createElement('li');
+            listItem.textContent = cityName;
+            searchHistoryElement.appendChild(listItem);
+        });
+    };
 });
-
-// Retrieve weather data from the API
-fetch(apiUrl)
-.then(function(response) {
-    return response.json();
-})
-.then(function(data) {
-    // Parse the JSON response and extract relevant information
-    const cityName = data.name;
-    const temperature = data.main.temp;
-    const wind = data.main.wind;
-    const humidity = data.main.humidity;
-
-    // Update HTML elements with weather information
-    document.getElementById('cityName').innerHTML = cityName;
-    document.getElementById('temperature').innerHTML = temperature;
-    document.getElementById('wind').innerHTML = temperature;
-    document.getElementById('humidity').innerHTML = humidity;
-})
-.catch(function(error) {
-    console.log('Error:', error);
-});
-
