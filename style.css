@@ -1,0 +1,38 @@
+h1 {
+    margin: 10px;
+    padding: auto;
+    background: linear-gradient(to right, rgb(26, 44, 202) , rgb(7, 18, 70));
+    color: white;
+}
+
+label {
+    font-size: larger;
+    font-weight: bold;
+}
+
+#city-input {
+    display: flex;
+    justify-content: left;
+    width: 25%;
+    border: 1px solid rgb(112, 109, 109);
+    border-radius: 5px;
+}
+
+button {
+    width: 25%;
+}
+
+#searchHistory {
+    width: 25%;
+}
+
+#searchHistory li {
+    list-style-type: none;
+    background-color: lightgray;
+    margin-top: 10px;
+    border-radius: 5%;
+}
+
+#searchHistory a {
+    text-decoration: none;
+}
