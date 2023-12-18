@@ -22,7 +22,7 @@ N/A
  
 ## Usage
  
-To use [this weather dashboard](https://github.com/acantu9/weather-dashboard.git), enter your city of choice into the search form and click 'Submit.' To the right you will the city's name pop up along with the temperature, wind speed, and humidity. The same weather conditions will be shown for a 5 day forecast.
+To use [this weather dashboard](https://acantu9.github.io/weather-dashboard/), enter your city of choice into the search form and click 'Submit.' To the right you will the city's name pop up along with the temperature, wind speed, and humidity. The same weather conditions will be shown for a 5 day forecast.
   
 ## License
 
